@@ -1,0 +1,9 @@
+/Users/editdelta/Documents/Lenzhound/Lenzhound/tools/gtest/CMakeFiles/gtest.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/tools/gtest/CMakeFiles/gtest_main.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/CMakeFiles/lenzhound_core.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/CMakeFiles/run-tests.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/test/CMakeFiles/tests.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/CMakeFiles/upload-rxr.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/CMakeFiles/upload-txr.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/CMakeFiles/verify-rxr.dir
+/Users/editdelta/Documents/Lenzhound/Lenzhound/CMakeFiles/verify-txr.dir

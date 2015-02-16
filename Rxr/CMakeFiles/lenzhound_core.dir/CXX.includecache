@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/constants.h
+
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/motor.h
+
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/motorcontroller.cpp
+motorcontroller.h
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/motorcontroller.h
+constants.h
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/constants.h
+util.h
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/util.h
+
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/motorcontroller.h
+motor.h
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/motor.h
+constants.h
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/constants.h
+
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/util.h
+constants.h
+/Users/editdelta/Documents/Lenzhound/Lenzhound/Rxr/constants.h
+
