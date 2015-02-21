@@ -1,1 +1,0 @@
-/usr/bin/c++    -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/tests.dir/motorcontrollertests.cpp.o  -o tests  ../tools/gtest/libgtest_main.a ../Rxr/liblenzhound_core.a ../tools/gtest/libgtest.a 
