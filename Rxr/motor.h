@@ -3,15 +3,11 @@
 
 namespace lh {
 
-class Motor {
-public:
-  virtual ~Motor() {}
-  virtual void Pulse() = 0;
-  virtual void SetDirForward() = 0;
-  virtual void SetDirBackward() = 0;
-  virtual void Sleep() = 0;
-  virtual void WakeUp() = 0;
-};
+void pulse_motor();
+void set_motor_dir_forward();
+void set_motor_dir_backward();
+void sleep_motor();
+void wake_motor();
 
 }
 

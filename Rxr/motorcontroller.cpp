@@ -6,7 +6,7 @@
 
 namespace lh {
 
-MotorController::MotorController(Motor * motor) :
+MotorController::MotorController() :
 direction_(1),
 max_velocity_(0),
 current_velocity_cap_(0),
@@ -19,7 +19,6 @@ observed_position_(0),
 run_count_(0),
 sleeping_(false)
 {
-  motor_ = motor;
 }
 
 void MotorController::set_observed_position(long position) {
@@ -68,12 +67,12 @@ long MotorController::GetDecelerationThreshold() {
 void MotorController::Sleep() {
   sleeping_ = true;
   run_count_ = 0;
-  motor_->Sleep();
+  sleep_motor();
 }
 
 void MotorController::WakeUp() {
   sleeping_ = false;
-  motor_->WakeUp();
+  wake_motor();
 }
 
 bool MotorController::TrySleep() {
@@ -108,11 +107,11 @@ void MotorController::Run() {
     if((motor_position_ < calculated_position_) &&
       (motor_position_ != observed_position_)) {
       motor_position_ += util::kFixedOne;
-      motor_->Pulse();
+      pulse_motor();
     }
     if(velocity_ < 0) {
       direction_ = 0;
-      motor_->SetDirBackward();
+      set_motor_dir_backward();
     }
   } else {
     if((calculated_position_ < observed_position_) ||
@@ -125,11 +124,11 @@ void MotorController::Run() {
     if(motor_position_ > calculated_position_ &&
       motor_position_ != observed_position_) {
       motor_position_ -= util::kFixedOne;
-      motor_->Pulse();
+      pulse_motor();
     }
     if(velocity_ > 0) {
       direction_ = 1;
-      motor_->SetDirForward();
+      set_motor_dir_forward();
     }
   }
 }

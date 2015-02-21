@@ -22,17 +22,16 @@
 #include "util.h"
 #include "constants.h"
 #include "macros.h"
-#include "motorimpl.h"
+#include "motor.h"
 #include "motorcontroller.h"
 #include "receiver.h"
 #include "events.h"
 
-MotorImpl motor;
 Console console;
 Settings settings;
 Receiver receiver;
 
-lh::MotorController motor_controller = lh::MotorController(&motor);
+lh::MotorController motor_controller = lh::MotorController();
 
 void TimerISR() {
   motor_controller.Run();
