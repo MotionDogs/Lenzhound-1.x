@@ -23,13 +23,13 @@ set(OPTS
 	--board ${BOARD} --port ${PORT} --pref sketchbook.path=${SKETCHBOOK})
 
 add_custom_target(verify-rxr
-	${ARDUINO} --verify ${OPTS} ${CMAKE_SOURCE_DIR}/Rxr/Rxr.ino)
+	arduino --verify ${OPTS} ${CMAKE_SOURCE_DIR}/Rxr/Rxr.ino)
 add_custom_target(verify-txr
-	${ARDUINO} --verify ${OPTS} ${CMAKE_SOURCE_DIR}/Txr/Txr.ino)
+	arduino --verify ${OPTS} ${CMAKE_SOURCE_DIR}/Txr/Txr.ino)
 add_custom_target(upload-rxr
-	${ARDUINO} --upload ${OPTS} ${CMAKE_SOURCE_DIR}/Rxr/Rxr.ino)
+	arduino --upload ${OPTS} ${CMAKE_SOURCE_DIR}/Rxr/Rxr.ino)
 add_custom_target(upload-txr
-	${ARDUINO} --upload ${OPTS} ${CMAKE_SOURCE_DIR}/Txr/Txr.ino)
+	arduino --upload ${OPTS} ${CMAKE_SOURCE_DIR}/Txr/Txr.ino)
 add_custom_target(run-tests
 	./test/tests
 	DEPENDS tests)

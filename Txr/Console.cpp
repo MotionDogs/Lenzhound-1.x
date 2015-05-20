@@ -1,4 +1,4 @@
-#include "qp_port.h"
+#include <qp_port.h>//#include "qp_port.h"
 #include "Console.h"
 #include "Txr.h"
 #include <CmdMessenger.h>
@@ -84,6 +84,24 @@ void OnGetChannel()
   Serial.println(settings.GetChannel());
 }
 
+void OnGetCalPositions()
+{
+  Serial.print(" CalPos1: ");
+  Serial.print(settings.GetCalPos1());
+  Serial.print(" CalPos2: ");
+  Serial.println(settings.GetCalPos2()); 
+}
+
+void OnGetSavedPositions()
+{
+  Serial.print("Saved Positions: ");
+  for(int i = 0; i < 4; i++)
+  {
+    Serial.print("\n\t");
+    Serial.print(settings.GetSavedPos(i));
+  }
+}
+
 void OnSetPALevel()
 {
   // todo: what happens if there is no arg?
@@ -112,6 +130,8 @@ void OnGetAllValues()
   OnGetVersionNumber();
   OnGetChannel();
   OnGetPALevel();
+  OnGetCalPositions();
+  OnGetSavedPositions();
 }
 
 int CheckBoundsInclusive(long val, long min, long max)

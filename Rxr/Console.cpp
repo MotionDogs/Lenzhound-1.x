@@ -43,7 +43,7 @@ void Console::Run()
 // Show available commands
 void ShowCommands() 
 {
-  Serial.println("Available commands");
+  Serial.println("Available commands:Dogbone");
   Serial.println(" 0;                      - This command list");
   Serial.println(" 1,<max velocity>;       - Set Max Velocity (10-48000)");
   Serial.println(" 2,<acceleration>;       - Set Acceleration (1-32000)");
