@@ -29,7 +29,6 @@
 *.exe
 *.out
 *.app
-test/tests
 
 # CMake generated files
 # (for make)

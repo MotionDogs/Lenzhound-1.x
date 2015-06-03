@@ -40,7 +40,7 @@ void Console::Run()
 // Show available commands
 void ShowCommands() 
 {
-  Serial.println("Available commands");
+  Serial.println("Available commands:Txr");
   Serial.println(" 0;                     - This command list");
   Serial.println(" 4,<channel>;           - Set Channel Num (1-82)");
   Serial.println(" 5,<PA level>;          - Set Power Amp Level (0=-18; 1=-12; 2=-6; 3=0)[dBm]");

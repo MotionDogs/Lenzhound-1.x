@@ -17,7 +17,7 @@ And install [CMake](http://www.cmake.org/download/)
 ###Linux
 Clone the repo:
 ```
-git clone https://github.com/MotionDogs/Lenzhound-1.x.git Lenzhound
+git clone https://github.com/MotionDogs/Lenzhound.git
 ```
 
 Build:
