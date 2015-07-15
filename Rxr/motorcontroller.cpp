@@ -17,7 +17,7 @@ calculated_position_(0),
 motor_position_(0),
 observed_position_(0),
 run_count_(0),
-sleeping_(false)
+sleeping_(true)
 {
 }
 
@@ -27,6 +27,10 @@ void MotorController::set_observed_position(long position) {
     run_count_ = 0;
   }
   observed_position_ = position;
+}
+
+void MotorController::set_motor_position(long position) {//not to be called typically
+  motor_position_ = position;
 }
 
 void MotorController::set_max_velocity(int velocity, int mode) {

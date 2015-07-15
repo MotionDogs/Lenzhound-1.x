@@ -27,6 +27,7 @@
 #include "receiver.h"
 #include "events.h"
 
+
 Console console;
 Settings settings;
 Receiver receiver;
@@ -67,7 +68,13 @@ void setup() {
 
   console.Init();
   DirtyCheckSettings();
-
+  
+  while(receiver.Position()==SENTINEL_VALUE){ //Wait until the motor gets a signal before setting starting position
+    receiver.GetData();
+    console.Run();
+  }
+  motor_controller.set_motor_position(receiver.Position());
+  
   Timer1.initialize();
   Timer1.attachInterrupt(TimerISR, kPeriod);
 }

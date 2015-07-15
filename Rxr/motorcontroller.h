@@ -11,6 +11,7 @@ public:
   void Configure(long accel, long max_velocity, long z_accel, long z_velocity);
   void Run();
   void set_observed_position(long position);
+  void set_motor_position(long position);
   void set_max_velocity(int velocity, int mode);
   void set_accel(int accel, int mode);
 private:
