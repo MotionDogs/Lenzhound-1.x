@@ -5,7 +5,7 @@
 
 // this shouldn't go here, but it's late and I'm tired
 // and Console IS the only place it's referenced
-#define CURRENT_VERSION "1.0.0"
+#define CURRENT_VERSION "1.0.3"
 
 class String;
 
