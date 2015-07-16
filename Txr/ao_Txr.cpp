@@ -186,7 +186,7 @@ QP::QState Txr::initial(Txr * const me, QP::QEvt const * const e) {
   me->mCalibrationPos2 = settings.GetCalPos2();
   if(!settings.GetStartInCal())//for when we add settings tab to GUI
   {
-    if(me->mCalibrationPos1 != 0){
+    /*if(me->mCalibrationPos1 != 0){
       // set all saved positions to within calibrated range
       for (int i=0; i<NUM_POSITION_BUTTONS; i++) {
           me->mSavedPositions[i] = settings.GetSavedPos(i) - me->mCalibrationPos1;
@@ -196,7 +196,7 @@ QP::QState Txr::initial(Txr * const me, QP::QEvt const * const e) {
       me->mCalibrationPos1 = 0;
       //settings.SetCalPos1(me->mCalibrationPos1);
       //settings.SetCalPos2(me->mCalibrationPos2);
-    }
+    }*/
     
     if (FREESWITCH_ON()) {
       return Q_TRAN(&freeRun);

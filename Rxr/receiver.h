@@ -1,9 +1,12 @@
 #ifndef rxr_receiver_h
 #define rxr_receiver_h
 
+
+static const int SENTINEL_VALUE = -2147483647;
+
 struct Packet {
   Packet() 
-  : position(0), velocity(0), acceleration(0), mode(0) {}
+  : position(SENTINEL_VALUE), velocity(0), acceleration(0), mode(0) {}
   long position;
   char velocity;
   char acceleration;
