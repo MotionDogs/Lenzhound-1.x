@@ -5,11 +5,7 @@
 
 // this shouldn't go here, but it's late and I'm tired
 // and Console IS the only place it's referenced
-<<<<<<< HEAD
-#define CURRENT_VERSION "1.0.2"
-=======
 #define CURRENT_VERSION "1.0.3"
->>>>>>> origin/Fix-for-power-off-issue
 
 class String;
 
