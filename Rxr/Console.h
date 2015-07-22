@@ -3,12 +3,7 @@
 
 #include "Settings.h"
 
-// this shouldn't go here, but it's late and I'm tired
-// and Console IS the only place it's referenced
-#define CURRENT_VERSION "1.0.3"
-
 class String;
-
 
 class Console
 {
@@ -43,6 +38,5 @@ void OnGetZModeAccel();
 void OnGetAllValues();
 int CheckBoundsInclusive(long val, long min, long max);
 void PrintSuccess(long val, String param);
-void OnGetVersionNumber();
 
 #endif

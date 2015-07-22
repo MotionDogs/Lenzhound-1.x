@@ -61,12 +61,6 @@ void PrintSuccess(long val, String param)
   Serial.println(val);
 }
 
-void OnGetVersionNumber()
-{
-  Serial.print(" Version: ");
-  Serial.println(CURRENT_VERSION);
-}
-
 void OnSetChannel()
 {
   // todo: what happens if there is no arg?
@@ -127,7 +121,6 @@ void OnCommandList()
 
 void OnGetAllValues()
 {
-  OnGetVersionNumber();
   OnGetChannel();
   OnGetPALevel();
   OnGetCalPositions();
