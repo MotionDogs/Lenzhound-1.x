@@ -68,6 +68,8 @@ void setup() {
 
   console.Init();
   DirtyCheckSettings();
+
+  delay(250);
   
   while(receiver.Position()==SENTINEL_VALUE){ //Wait until the motor gets a signal before setting starting position
     receiver.GetData();
