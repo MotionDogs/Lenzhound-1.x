@@ -69,12 +69,6 @@ void PrintSuccess(long val, String param)
   Serial.println(val);
 }
 
-void OnGetVersionNumber()
-{
-  Serial.print(" Version: ");
-  Serial.println(CURRENT_VERSION);
-}
-
 void OnSetMaxVel()
 {
   // todo: what happens if there is no arg?
@@ -195,7 +189,6 @@ void OnCommandList()
 
 void OnGetAllValues()
 {
-  OnGetVersionNumber();
   OnGetMaxVel();
   OnGetAccel();
   OnGetAntenna();

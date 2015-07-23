@@ -31,6 +31,8 @@ void MotorController::set_observed_position(long position) {
 
 void MotorController::set_motor_position(long position) {//not to be called typically
   motor_position_ = position;
+  calculated_position_ = position;
+  observed_position_ = position;
 }
 
 void MotorController::set_max_velocity(int velocity, int mode) {
