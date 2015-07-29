@@ -1,9 +1,13 @@
 #include "Console.h"
 #include <CmdMessenger.h>
 #include "Settings.h"
+#include "receiver.h"
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 static Settings settings;
+
+int consoleObsPos = SENTINEL_VALUE;
+
 static const char SUCCESS[] = "SUCCESS";
 static const char ERROR[] = "ERROR";
 
@@ -19,6 +23,7 @@ enum
   SET_PALEVEL = 5,
   SET_ZMODE_MAX_VEL = 7,
   SET_ZMODE_ACCEL = 8,
+  SET_OBS_POS = 9
 };
 
 Console::Console()
@@ -181,6 +186,15 @@ void OnGetZModeAccel()
   Serial.println(settings.GetZModeAcceleration());
 }
 
+void OnSetObsPos()
+{
+  
+}
+
+void GetConsoleObsPos()
+{
+  
+}
 // Callback function that shows a list of commands
 void OnCommandList()
 {
@@ -220,4 +234,5 @@ void Console::AttachCommandCallbacks()
   cmdMessenger.attach(SET_PALEVEL, OnSetPALevel);
   cmdMessenger.attach(SET_ZMODE_MAX_VEL, OnSetZModeMaxVel);
   cmdMessenger.attach(SET_ZMODE_ACCEL, OnSetZModeAccel);
+  cmdMessenger.attach(SET_OBS_POS, OnSetObsPos);
 }
