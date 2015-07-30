@@ -2,11 +2,14 @@
 #define rxr_receiver_h
 
 
+#define MAX_VELOCITY 100
+#define MAX_ACCELERATION 100
+
 static const int SENTINEL_VALUE = -2147483647;
 
 struct Packet {
   Packet() 
-  : position(SENTINEL_VALUE), velocity(0), acceleration(0), mode(0) {}
+  : position(SENTINEL_VALUE), velocity(MAX_VELOCITY), acceleration(MAX_ACCELERATION), mode(0) {}
   long position;
   char velocity;
   char acceleration;

@@ -71,7 +71,7 @@ void setup() {
 
   delay(250);
   
-  while(receiver.Position()==SENTINEL_VALUE){ //Wait until the motor gets a signal before setting starting position
+  while(receiver.Position()==SENTINEL_VALUE && console.GetConsoleObsPos()==SENTINEL_VALUE){ //Wait until the motor gets a signal before setting starting position
     receiver.GetData();
     console.Run();
   }
@@ -87,6 +87,8 @@ void loop() {
   motor_controller.set_max_velocity(receiver.Velocity(), receiver.Mode());
   motor_controller.set_accel(receiver.Acceleration(), receiver.Mode());
   console.Run();
+  if(console.GetConsoleObsPos()!=SENTINEL_VALUE)
+    motor_controller.set_observed_position(console.GetConsoleObsPos());
   if (events::dirty()) {
     events::set_dirty(false);
     DirtyCheckSettings();

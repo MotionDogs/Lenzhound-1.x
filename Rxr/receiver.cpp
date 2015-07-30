@@ -9,9 +9,6 @@
 #include "util.h"
 #include "constants.h"
 
-#define MAX_VELOCITY 100
-#define MAX_ACCELERATION 100
-
 #define RATE_MASK     0b00101000
 #define RATE_250KB    0b00100000
 #define RATE_1MB      0b00000000

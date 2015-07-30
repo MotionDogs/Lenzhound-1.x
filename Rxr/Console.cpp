@@ -45,6 +45,11 @@ void Console::Run()
   cmdMessenger.feedinSerialData();
 }
 
+int Console::GetConsoleObsPos()
+{
+  return consoleObsPos;
+}
+
 // Show available commands
 void ShowCommands() 
 {
@@ -188,13 +193,11 @@ void OnGetZModeAccel()
 
 void OnSetObsPos()
 {
-  
+  consoleObsPos = cmdMessenger.readInt32Arg();
+  Serial.print(" Moving to ");
+  Serial.println(consoleObsPos);
 }
 
-void GetConsoleObsPos()
-{
-  
-}
 // Callback function that shows a list of commands
 void OnCommandList()
 {

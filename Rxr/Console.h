@@ -11,6 +11,7 @@ public:
   Console();
   void Init();
   void Run();
+  int GetConsoleObsPos();
 private:
   void AttachCommandCallbacks();
 };
@@ -36,6 +37,7 @@ void OnGetZModeMaxVel();
 void OnSetZModeAccel();
 void OnGetZModeAccel();
 void OnGetAllValues();
+void OnSetObsPos();
 int CheckBoundsInclusive(long val, long min, long max);
 void PrintSuccess(long val, String param);
 
