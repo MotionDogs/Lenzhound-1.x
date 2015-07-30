@@ -82,13 +82,15 @@ void setup() {
 }
  
 void loop() {
-  receiver.GetData();
-  motor_controller.set_observed_position(receiver.Position());
-  motor_controller.set_max_velocity(receiver.Velocity(), receiver.Mode());
-  motor_controller.set_accel(receiver.Acceleration(), receiver.Mode());
+  receiver.GetData();  
   console.Run();
   if(console.GetConsoleObsPos()!=SENTINEL_VALUE)
-    motor_controller.set_observed_position(console.GetConsoleObsPos());
+    motor_controller.set_observed_position(util::MakeFixed(console.GetConsoleObsPos()));
+  else{
+    motor_controller.set_observed_position(receiver.Position());
+    motor_controller.set_max_velocity(receiver.Velocity(), receiver.Mode());
+    motor_controller.set_accel(receiver.Acceleration(), receiver.Mode());
+  }
   if (events::dirty()) {
     events::set_dirty(false);
     DirtyCheckSettings();

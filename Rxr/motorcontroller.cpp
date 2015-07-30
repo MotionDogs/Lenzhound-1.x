@@ -1,7 +1,7 @@
 #include "motorcontroller.h"
 #include "constants.h"
 #include "util.h"
-
+#include <CmdMessenger.h>
 #define CONVERSION_FACTOR .01
 
 namespace lh {
@@ -81,6 +81,14 @@ void MotorController::WakeUp() {
   wake_motor();
 }
 
+void MotorController::debugLine(){
+  Serial.print(observed_position_);
+  Serial.print(',');
+  Serial.print(calculated_position_);
+  Serial.print(',');
+  Serial.println(observed_position_);
+}
+
 bool MotorController::TrySleep() {
   if (motor_position_ != observed_position_) {
     run_count_ = 0;
@@ -98,6 +106,7 @@ bool MotorController::TrySleep() {
 }
 
 void MotorController::Run() {
+  //debugLine();
   if (TrySleep()) {
     return;
   }

@@ -7,7 +7,6 @@
 #include "macros.h"
 #include "receiver.h"
 #include "util.h"
-#include "constants.h"
 
 #define RATE_MASK     0b00101000
 #define RATE_250KB    0b00100000

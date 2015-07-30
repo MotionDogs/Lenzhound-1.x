@@ -62,6 +62,7 @@ void ShowCommands()
   Serial.println(" 5,<PA level>;           - Set Power Amp Level (0=-18; 1=-12; 2=-6; 3=0)[dBm]");
   Serial.println(" 7,<zmode max velocity>; - Set ZMode Max Velocity (10-48000)");
   Serial.println(" 8,<zmode acceleration>; - Set ZMode Acceleration (1-32000)");
+  Serial.println(" 9,<target position>;    - Set observed_position_ (long)");
   Serial.println("Current values");
   OnGetAllValues();
 }
