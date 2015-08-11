@@ -19,6 +19,10 @@ inline long MakeFixed(long a) {
   return a << kBitShift;
 }
 
+inline long MakeUnfixed(long a) {
+  return a >> kBitShift;
+}
+
 inline long FixedMultiply(long a, long b) {
   return (a * b) >> kBitShift;
 }

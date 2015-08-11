@@ -114,17 +114,17 @@ void MotorController::Run() {
   if(direction_) {
     if((calculated_position_ > observed_position_) ||
       (steps_to_go <= GetDecelerationThreshold())) {
-      velocity_ -= accel_;
+      velocity_  -= accel_;
     } else if (calculated_position_ < observed_position_) {
       velocity_ = util::Min(velocity_+accel_, current_velocity_cap_);
     }
     calculated_position_ += velocity_;
     if((motor_position_ < calculated_position_) &&
-      (motor_position_ != observed_position_)) {
+      (util::MakeUnfixed(motor_position_) != util::MakeUnfixed(observed_position_))) { //we compare integet values by making unfixed, dampens vibration caused by rubberbanding
       motor_position_ += util::kFixedOne;
       pulse_motor();
     }
-    if(velocity_ < 0) {
+    if(velocity_ <= 0) {
       direction_ = 0;
       set_motor_dir_backward();
     }
@@ -137,11 +137,11 @@ void MotorController::Run() {
     }
     calculated_position_ += velocity_;
     if(motor_position_ > calculated_position_ &&
-      motor_position_ != observed_position_) {
+      (util::MakeUnfixed(motor_position_) != util::MakeUnfixed(observed_position_))) {
       motor_position_ -= util::kFixedOne;
       pulse_motor();
     }
-    if(velocity_ > 0) {
+    if(velocity_ >= 0) {
       direction_ = 1;
       set_motor_dir_forward();
     }

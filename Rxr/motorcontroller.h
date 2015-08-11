@@ -13,7 +13,8 @@ public:
   void set_observed_position(long position);
   void set_motor_position(long position);
   void set_max_velocity(int velocity, int mode);
-  void set_accel(int accel, int mode);
+  void set_accel(int accel, int mode);  
+  void debugLine();
 private:
   bool direction_;
   long max_velocity_;
@@ -35,7 +36,6 @@ private:
   bool TrySleep();
   void Sleep();
   void WakeUp();
-  void debugLine();
 };
 
 }
