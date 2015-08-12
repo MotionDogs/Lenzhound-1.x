@@ -124,7 +124,7 @@ void MotorController::Run() {
       motor_position_ += util::kFixedOne;
       pulse_motor();
     }
-    if(velocity_ <= 0) {
+    if(velocity_ < 0) {
       direction_ = 0;
       set_motor_dir_backward();
     }
@@ -141,7 +141,7 @@ void MotorController::Run() {
       motor_position_ -= util::kFixedOne;
       pulse_motor();
     }
-    if(velocity_ >= 0) {
+    if(velocity_ > 0) {
       direction_ = 1;
       set_motor_dir_forward();
     }
