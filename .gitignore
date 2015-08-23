@@ -1,6 +1,9 @@
 # Build output folders
 */build-*
 
+# test executable
+test/tests
+
 # Compiled Object files
 *.slo
 *.lo
