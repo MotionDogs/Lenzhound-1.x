@@ -24,6 +24,8 @@
 #include "macros.h"
 #include "motor.h"
 #include "motorcontroller.h"
+#include "timelapsecontroller.h"
+#include "timelapseconfigbuilder.h"
 #include "receiver.h"
 #include "events.h"
 
@@ -33,9 +35,20 @@ Settings settings;
 Receiver receiver;
 
 lh::MotorController motor_controller = lh::MotorController();
+lh::TimelapseController timelapse_controller;
+lh::TimelapseConfigBuilder timelapse_builder;
+lh::TimelapseState timelapse = {0};
+const i32 free_space_size = 512;
+char free_space[free_space_size] = {0};
+char input[80] = {0};
+i32 input_index = 0;
+bool timelapse_started = 0;
+bool capturing_config = 0;
 
 void TimerISR() {
-  motor_controller.Run();
+  if (timelapse_started) {
+    timelapse_controller.run(&timelapse);
+  }
 }
 
 void DirtyCheckSettings() {
@@ -43,7 +56,7 @@ void DirtyCheckSettings() {
   long max_velocity = settings.GetMaxVelocity();
   long z_max_velocity = settings.GetZModeMaxVelocity();
   long z_max_accel = settings.GetZModeAcceleration();
-  motor_controller.Configure(accel, max_velocity, z_max_accel, z_max_velocity);
+  motor_controller.configure(accel, max_velocity, z_max_accel, z_max_velocity);
   receiver.ReloadSettings();
 }
  
@@ -66,29 +79,42 @@ void setup() {
   MS1_PIN(SET);
   MS2_PIN(SET);
 
-  console.Init();
+  // console.Init();
   DirtyCheckSettings();
 
-  delay(250);
+  timelapse.motor_controller = &motor_controller;
+
+  // delay(250);
   
-  while(receiver.Position()==SENTINEL_VALUE){ //Wait until the motor gets a signal before setting starting position
-    receiver.GetData();
-    console.Run();
-  }
-  motor_controller.set_motor_position(receiver.Position());
+  // while(receiver.Position()==SENTINEL_VALUE){ //Wait until the motor gets a signal before setting starting position
+  //   receiver.GetData();
+  //   console.Run();
+  // }
+  // motor_controller.set_motor_position(receiver.Position());
   
   Timer1.initialize();
   Timer1.attachInterrupt(TimerISR, kPeriod);
 }
  
 void loop() {
-  receiver.GetData();
-  motor_controller.set_observed_position(receiver.Position());
-  motor_controller.set_max_velocity(receiver.Velocity(), receiver.Mode());
-  motor_controller.set_accel(receiver.Acceleration(), receiver.Mode());
-  console.Run();
-  if (events::dirty()) {
-    events::set_dirty(false);
-    DirtyCheckSettings();
-  }
+  i32 bytes_available = Serial.available();
+  for (int i = 0; i < bytes_available; ++i) {
+    char read = Serial.read();
+    if (read == '^') {
+      timelapse_started = 0;
+      capturing_config = 1;
+    }
+    input[input_index++] = read;
+    if (read == '$') {
+      i32 err = timelapse_builder.build_configuration(
+        &timelapse.config, free_space, free_space_size, input);
+      timelapse_controller.init_state(&timelapse);
+      if (!err) {
+        timelapse_started = 1;
+      } else {
+        Serial.println("ERR");
+      }
+      capturing_config = 0;
+    }
+  } 
 }

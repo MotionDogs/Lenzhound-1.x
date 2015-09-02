@@ -43,29 +43,17 @@ void Console::Run()
 // Show available commands
 void ShowCommands() 
 {
-  Serial.println("Available commands:Dogbone");
-  Serial.println(" 0;                      - This command list");
-  Serial.println(" 1,<max velocity>;       - Set Max Velocity (10-48000)");
-  Serial.println(" 2,<acceleration>;       - Set Acceleration (1-32000)");
-  Serial.println(" 3,<antenna>;            - Set Antenna (0=integrated; 1=remote)");
-  Serial.println(" 4,<channel>;            - Set Channel Num (1-82)");
-  Serial.println(" 5,<PA level>;           - Set Power Amp Level (0=-18; 1=-12; 2=-6; 3=0)[dBm]");
-  Serial.println(" 7,<zmode max velocity>; - Set ZMode Max Velocity (10-48000)");
-  Serial.println(" 8,<zmode acceleration>; - Set ZMode Acceleration (1-32000)");
-  Serial.println("Current values");
   OnGetAllValues();
 }
 
 void OnUnknownCommand()
 {
-  Serial.println("This command is unknown!");
   ShowCommands();
 }
 
 void PrintSuccess(long val, String param)
 {
   Serial.print(param);
-  Serial.print(": ");
   Serial.println(val);
 }
 
@@ -81,7 +69,6 @@ void OnSetMaxVel()
 
 void OnGetMaxVel()
 {
-  Serial.print(" Max Vel: ");
   Serial.println(settings.GetMaxVelocity());
 }
 
@@ -97,7 +84,6 @@ void OnSetAccel()
 
 void OnGetAccel()
 {
-  Serial.print(" Accel: ");
   Serial.println(settings.GetAcceleration());
 }
 
@@ -107,13 +93,11 @@ void OnSetAntenna()
   int val = cmdMessenger.readInt16Arg();
   if (CheckBoundsInclusive(val, 0, 1)) {
     settings.SetAntenna(val);
-    PrintSuccess(val, "Antenna");
   }  
 }
 
 void OnGetAntenna()
 {
-  Serial.print(" Antenna: ");
   Serial.println(settings.GetAntenna());
 }
 
@@ -129,7 +113,6 @@ void OnSetChannel()
 
 void OnGetChannel()
 {
-  Serial.print(" Channel: ");
   Serial.println(settings.GetChannel());
 }
 
@@ -145,7 +128,6 @@ void OnSetPALevel()
 
 void OnGetPALevel()
 {
-  Serial.print(" PA Level: ");
   Serial.println(settings.GetPALevel());
 }
 
@@ -161,7 +143,6 @@ void OnSetZModeMaxVel()
 
 void OnGetZModeMaxVel()
 {
-  Serial.print(" ZMode Max Vel: ");
   Serial.println(settings.GetZModeMaxVelocity());
 }
 
@@ -177,7 +158,6 @@ void OnSetZModeAccel()
 
 void OnGetZModeAccel()
 {
-  Serial.print(" ZMode Accel: ");
   Serial.println(settings.GetZModeAcceleration());
 }
 

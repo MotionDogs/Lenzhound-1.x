@@ -1,6 +1,7 @@
 #include "motorcontroller.h"
 #include "constants.h"
 #include "util.h"
+#include "stdio.h"
 
 #define CONVERSION_FACTOR .01
 
@@ -23,7 +24,7 @@ sleeping_(true)
 
 void MotorController::set_observed_position(long position) {
   if (position != observed_position_) {
-    WakeUp();
+    wake_up();
     run_count_ = 0;
   }
   observed_position_ = position;
@@ -53,7 +54,7 @@ void MotorController::set_accel(int accel, int mode){
   }
 }
 
-void MotorController::Configure(
+void MotorController::configure(
   long max_accel, long max_velocity, long z_accel, long z_velocity) {
   max_accel_ = max_accel;
   max_velocity_ = max_velocity;
@@ -65,23 +66,23 @@ void MotorController::Configure(
   set_max_velocity(100, FREE_MODE);
 }
 
-long MotorController::GetDecelerationThreshold() {
+long MotorController::get_deceleration_threshold() {
   return util::FixedDivide(
     util::FixedMultiply(velocity_,velocity_),decel_denominator_);
 }
 
-void MotorController::Sleep() {
+void MotorController::sleep() {
   sleeping_ = true;
   run_count_ = 0;
   sleep_motor();
 }
 
-void MotorController::WakeUp() {
+void MotorController::wake_up() {
   sleeping_ = false;
   wake_motor();
 }
 
-bool MotorController::TrySleep() {
+bool MotorController::try_sleep() {
   if (motor_position_ != observed_position_) {
     run_count_ = 0;
     return false;
@@ -90,21 +91,21 @@ bool MotorController::TrySleep() {
     return true;
   }
   if (run_count_ > kSleepThreshold) {
-    Sleep();
+    sleep();
     return true;
   }
   run_count_++;
   return false;
 }
 
-void MotorController::Run() {
-  if (TrySleep()) {
+void MotorController::run() {
+  if (try_sleep()) {
     return;
   }
   long steps_to_go = util::Abs(observed_position_ - calculated_position_);
   if(direction_) {
     if((calculated_position_ > observed_position_) ||
-      (steps_to_go <= GetDecelerationThreshold())) {
+      (steps_to_go <= get_deceleration_threshold())) {
       velocity_ -= accel_;
     } else if (calculated_position_ < observed_position_) {
       velocity_ = util::Min(velocity_+accel_, current_velocity_cap_);
@@ -121,7 +122,7 @@ void MotorController::Run() {
     }
   } else {
     if((calculated_position_ < observed_position_) ||
-      (steps_to_go <= GetDecelerationThreshold())){
+      (steps_to_go <= get_deceleration_threshold())){
       velocity_ += accel_;
     } else if (calculated_position_ > observed_position_) {
       velocity_ = util::Max(velocity_-accel_, -current_velocity_cap_);

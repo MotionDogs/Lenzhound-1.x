@@ -8,12 +8,13 @@ namespace lh {
 class MotorController {
 public:
   MotorController();
-  void Configure(long accel, long max_velocity, long z_accel, long z_velocity);
-  void Run();
+  void configure(long accel, long max_velocity, long z_accel, long z_velocity);
+  void run();
   void set_observed_position(long position);
   void set_motor_position(long position);
   void set_max_velocity(int velocity, int mode);
   void set_accel(int accel, int mode);
+  long get_motor_position() { return motor_position_; }
 private:
   bool direction_;
   long max_velocity_;
@@ -31,10 +32,10 @@ private:
   long run_count_;
   long sleeping_;
 
-  long GetDecelerationThreshold();
-  bool TrySleep();
-  void Sleep();
-  void WakeUp();
+  long get_deceleration_threshold();
+  bool try_sleep();
+  void sleep();
+  void wake_up();
 };
 
 }

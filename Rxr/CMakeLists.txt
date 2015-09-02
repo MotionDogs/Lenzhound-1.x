@@ -1,1 +1,5 @@
-add_library(lenzhound_core motorcontroller.cpp)
+add_library(lenzhound_core
+  motorcontroller.cpp
+  timelapsecontroller.cpp
+  timelapseconfigbuilder.cpp
+)

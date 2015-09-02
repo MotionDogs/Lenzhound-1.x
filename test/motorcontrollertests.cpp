@@ -3,6 +3,9 @@
 #include "motorcontroller.h"
 #include "util.h"
 #include "constants.h"
+#include "testsetup.h"
+
+namespace {
 
 struct MotorPulse { long run_count, direction; };
 struct MotorContext {
@@ -19,63 +22,69 @@ void reset_context() {
   context.pulses_.clear();
 }
 
-void lh::pulse_motor() {
+void test_pulse_motor() {
   context.position_ += context.direction_;
   ASSERT_LE(context.position_, context.boundary_);
   MotorPulse pulse = { context.run_count_, context.direction_ };
   context.pulses_.push_back(pulse);
 }
-void lh::set_motor_dir_forward() {
+void test_set_motor_dir_forward() {
   context.direction_ = 1;
 }
-void lh::set_motor_dir_backward() {
+void test_set_motor_dir_backward() {
   context.direction_ = -1;
 }
-void lh::sleep_motor() {
-}
-void lh::wake_motor() {
+
+void setup_motor_funcs() {
+  lh_test::reset_motor_funcs();
+  lh_test::set_pulse_motor_func(&test_pulse_motor);
+  lh_test::set_set_motor_dir_forward_func(&test_set_motor_dir_forward);
+  lh_test::set_set_motor_dir_backward_func(&test_set_motor_dir_backward);
 }
 
 TEST(MotorController, HitsItsTarget) {
   reset_context();
+  setup_motor_funcs();
   lh::MotorController controller = lh::MotorController();
   long target = 5000;
 
-  controller.Configure(50, 6000, 50, 6000);
+  controller.configure(50, 6000, 50, 6000);
   controller.set_max_velocity(100, 0);
   controller.set_observed_position(util::MakeFixed(target));
 
   // make sure we don't go over target
   context.boundary_ = target;
   for (int i = 0; i < 35000; ++i) {
-    controller.Run();
+    controller.run();
   }
   EXPECT_EQ(context.position_, target);
 }
 
 TEST(MotorController, HandlesSlowSpeeds) {
+  setup_motor_funcs();
   reset_context();
   lh::MotorController controller = lh::MotorController();
   long target = 300;
 
-  controller.Configure(50, 1, 50, 1);
+  controller.configure(50, 1, 50, 1);
   controller.set_max_velocity(100, 0);
   controller.set_observed_position(util::MakeFixed(target));
 
   // make sure we don't go over target
   context.boundary_ = target;
   for (int i = 0; i < 10000000; ++i) {
-    controller.Run();
+    controller.run();
   }
   EXPECT_EQ(context.position_, target);
 }
 
 TEST(MotorController, DoesNotChangeConcavity) {
+  setup_motor_funcs();
   reset_context();
   lh::MotorController controller = lh::MotorController();
   long target = 6000;
 
-  controller.Configure(32, 48000, 32, 48000);
+  controller.configure(32, 48000, 32, 48000);
   controller.set_max_velocity(100, FREE_MODE);
   controller.set_accel(100, FREE_MODE);
   controller.set_observed_position(util::MakeFixed(target));
@@ -83,7 +92,7 @@ TEST(MotorController, DoesNotChangeConcavity) {
   context.boundary_ = target;
 
   for (int i = 0; i < 60000; ++i) {
-    controller.Run();
+    controller.run();
     ++context.run_count_;
   }
 
@@ -108,4 +117,6 @@ TEST(MotorController, DoesNotChangeConcavity) {
 
     prev_delta = next_delta;
   }
+}
+
 }

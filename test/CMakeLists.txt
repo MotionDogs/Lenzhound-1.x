@@ -1,3 +1,7 @@
 add_executable(tests 
-	motorcontrollertests.cpp)
+  testsetup.cpp
+  motorcontrollertests.cpp
+  timelapsecontrollertests.cpp
+  timelapseconfigbuildertests.cpp
+)
 target_link_libraries(tests gtest_main lenzhound_core)
