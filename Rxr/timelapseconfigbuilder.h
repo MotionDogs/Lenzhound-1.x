@@ -13,7 +13,7 @@ public:
     TimelapseConfiguration* config,
     void* memory, i32 max_size,
     char* str_input); // assume null-terminated string
-  CubicSpline2 interpolate_cubic_spline(
+  CubicSpline interpolate_cubic_spline(
     f32* xs, f32* ys, i16 n, void* free_space);
 };
 

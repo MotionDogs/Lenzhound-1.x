@@ -6,7 +6,7 @@
 
 namespace lh {
 
-struct CubicSpline2 {
+struct CubicSpline {
   f32* as;
   f32* bs;
   f32* cs;
@@ -15,18 +15,8 @@ struct CubicSpline2 {
   i16 n;
 };
 
-struct CubicSpline {
-  f32* xs;
-  f32* ys; 
-  f32* as; 
-  f32* bs;
-  i16 n;
-};
-
-void interpolate_cubic_spline(CubicSpline* spline, void* free_space);
-
 struct TimelapseConfiguration {
-  CubicSpline2 spline;
+  CubicSpline spline;
   i32 interval_in_millis, delay_in_millis;
 };
 
@@ -36,7 +26,6 @@ struct TimelapseState {
   i32 delay_remaining, position, cur_cycles, next_target;
 };
 
-i32 eval_spline(f32 x, CubicSpline2* spline);
 i32 eval_spline(f32 x, CubicSpline* spline);
 
 class TimelapseController {

@@ -48,9 +48,9 @@ TEST(TimelapseController, HappyPath) {
   char free_space[free_space_size] = {0};
   lh::TimelapseState state = {0};
   lh::TimelapseConfigBuilder timelapse_builder;
-  timelapse_builder.build_configuration(&state.config,
+  i32 err = timelapse_builder.build_configuration(&state.config,
     free_space, free_space_size, (char*)
-    "^i:1000,d:100,x:0,x:1000,x:10000,x:20000,y:0,y:50,y:500,y:1000$");
+    "^i:1000,d:100,n:3,t:1000,s:50,t:10000,s:500,t:20000,s:1000$");
   state.motor_controller = &motor;
   state.delay_remaining = state.config.delay_in_millis;
 
@@ -60,6 +60,7 @@ TEST(TimelapseController, HappyPath) {
 
   lh::TimelapseController timelapse;
 
+  ASSERT_EQ(err, 0);
   i32 j = 0;
   for (int i = 0; i < n; ++i) {
     for (; j <= ((i32)xs[i] * 6); ++j) {
@@ -71,32 +72,51 @@ TEST(TimelapseController, HappyPath) {
   EXPECT_EQ(context.position_, (i32)ys[n-1] * 8);
 }
 
-// TEST(TimelapseController, MakesASraightLine) {
-//   reset_context();
-//   setup_motor_funcs();
+TEST(TimelapseController, RunsTwoTimelapsesConsecutively) {
+  reset_context();
+  setup_motor_funcs();
 
-//   lh::MotorController motor = lh::MotorController();
-//   motor.configure(1000, 6000, 1000, 6000);
-//   motor.set_max_velocity(10000, 0);
+  lh::MotorController motor = lh::MotorController();
+  motor.configure(1000, 6000, 1000, 6000);
+  motor.set_max_velocity(10000, 0);
 
-//   const i32 free_space_size = 512;
-//   char free_space[free_space_size] = {0};
-//   lh::TimelapseState state = {0};
-//   lh::TimelapseConfigBuilder timelapse_builder;
-//   timelapse_builder.build_configuration(&state.config,
-//     free_space, free_space_size, (char*)
-//     "^i:100,d:10,x:0,x:100,y:0,y:200$");
-//   state.motor_controller = &motor;
-//   state.delay_remaining = state.config.delay_in_millis;
+  const i32 free_space_size = 512;
+  char free_space[free_space_size] = {0};
+  lh::TimelapseState state = {0};
+  state.motor_controller = &motor;
 
-//   lh::TimelapseController timelapse;
+  lh::TimelapseConfigBuilder timelapse_builder;
+  lh::TimelapseController timelapse;
 
-//   for (int i = 0; i < (200 * 6); ++i) {
-//     timelapse.run(&state);
-//   }
+  motor.set_motor_position(0);
+  i32 err = timelapse_builder.build_configuration(&state.config,
+    free_space, free_space_size, (char*)
+    "^i:1000,d:10,n:1,t:10000,s:200$");
 
-//   EXPECT_EQ(state.position, 500);
-// }
+  ASSERT_EQ(err, 0);
+
+  timelapse.init_state(&state);
+
+  for (int i = 0; i < 10000 * 6; ++i) {
+    timelapse.run(&state);
+  }
+
+  EXPECT_EQ(state.position, 200); 
+  EXPECT_EQ(context.position_, 200 * 8);
+
+  motor.set_motor_position(0);
+  timelapse_builder.build_configuration(&state.config,
+    free_space, free_space_size, (char*)
+    "^i:1000,d:10,n:1,t:5000,s:1000$");
+  timelapse.init_state(&state);
+
+  for (int i = 0; i < 5000 * 6; ++i) {
+    timelapse.run(&state);
+  }
+
+  EXPECT_EQ(state.position, 1000); 
+  EXPECT_EQ(context.position_, (200 + 1000) * 8);
+}
 
 TEST(TimelapseController, InterpolateHandlesWikipediaCase) {
   i16 n = 2;
@@ -104,7 +124,7 @@ TEST(TimelapseController, InterpolateHandlesWikipediaCase) {
   f32 ys[3] = {50, 0, 300};
   i32 free[512] = {0};
   lh::TimelapseConfigBuilder builder;
-  lh::CubicSpline2 spline = builder.interpolate_cubic_spline(xs, ys, n, free);
+  lh::CubicSpline spline = builder.interpolate_cubic_spline(xs, ys, n, free);
 
   EXPECT_EQ(50, eval_spline(-100.0f, &spline));
 }

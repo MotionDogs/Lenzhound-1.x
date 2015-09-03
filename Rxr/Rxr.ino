@@ -9,6 +9,8 @@
 // for more details.
 //****************************************************************************
 
+#define DUINO 1
+
 #include <SPI.h>
 #include <Mirf.h>
 #include <MirfHardwareSpiDriver.h>
@@ -100,17 +102,33 @@ void loop() {
   i32 bytes_available = Serial.available();
   for (int i = 0; i < bytes_available; ++i) {
     char read = Serial.read();
+    if (read == '?') {
+      Serial.println(timelapse.position);
+    }
+
     if (read == '^') {
       timelapse_started = 0;
       capturing_config = 1;
+      input_index = 0;
     }
     input[input_index++] = read;
     if (read == '$') {
       i32 err = timelapse_builder.build_configuration(
         &timelapse.config, free_space, free_space_size, input);
+      motor_controller.set_motor_position(0);
       timelapse_controller.init_state(&timelapse);
       if (!err) {
         timelapse_started = 1;
+        Serial.println("OK");
+        char buffer[100];
+        Serial.print(timelapse.config.spline.xs[0]);
+        Serial.print(" ");
+        Serial.print(timelapse.config.spline.xs[1]);
+        Serial.print(" ");
+        Serial.print(timelapse.config.spline.as[0]);
+        Serial.print(" ");
+        Serial.print(timelapse.config.spline.as[1]);
+        Serial.println("");
       } else {
         Serial.println("ERR");
       }

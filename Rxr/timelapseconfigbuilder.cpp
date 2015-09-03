@@ -10,8 +10,37 @@ char* find_char(char* input, char c) {
   return input;
 }
 
+void parse_i32(char* input, i32* output) {
+  bool negative = 0;
+  if (*input == '-') {
+    ++input;
+    negative = 1;
+  }
+
+  *output = 0;
+  i32 tmp = 0;
+  for (int i = 0; i < 10; ++i) {
+    tmp *= 10;
+    switch(*input) {
+      case '1': tmp+=1; break;
+      case '2': tmp+=2; break;
+      case '3': tmp+=3; break;
+      case '4': tmp+=4; break;
+      case '5': tmp+=5; break;
+      case '6': tmp+=6; break;
+      case '7': tmp+=7; break;
+      case '8': tmp+=8; break;
+      case '9': tmp+=9; break;
+      case '0': break;
+      default: return;
+    }
+    input++;
+    *output = tmp;
+  }
+}
+
 // space requirements: count * 8 - 4
-lh::CubicSpline2 lh::TimelapseConfigBuilder::interpolate_cubic_spline(
+lh::CubicSpline lh::TimelapseConfigBuilder::interpolate_cubic_spline(
   f32* xs, f32* ys, i16 n, void* free_space) {
 
   f32* a = ys; // f32[n+1]
@@ -50,7 +79,7 @@ lh::CubicSpline2 lh::TimelapseConfigBuilder::interpolate_cubic_spline(
     d[i] =  (c[i+1] - c[i]) / (3.0f * h[i]);
   }
 
-  CubicSpline2 result;
+  CubicSpline result;
   result.as = a;
   result.bs = b;
   result.cs = c;
@@ -68,53 +97,59 @@ i32 lh::TimelapseConfigBuilder::build_configuration(
 
   i32 max_count = ((max_size + 4) / (sizeof(f32) * 10));
 
-  int scan_result = sscanf(str_input, "^i:%d,d:%d,%*s",
-    &result->interval_in_millis, &result->delay_in_millis);
-
-  if (scan_result < 0) {
+  if (str_input[0] != '^' || str_input[1] != 'i') {
     return -1;
   }
 
+  parse_i32(str_input + 3, &result->interval_in_millis);
+  char* comma = find_char(str_input, ',');
+
+  if (!comma || comma[1] != 'd') {
+    return -2;
+  }
+  parse_i32(comma + 3, &result->delay_in_millis);
+
   i32 count = 0;
+  comma = find_char(comma + 1, ',');
+  if (!comma || comma[1] != 'n') {
+    return -3;
+  }
+  parse_i32(comma + 3, &count);
+
+  if (count > max_count) {
+    return -4;
+  }
+
   f32* xs = (f32*)memory;
-  char* comma = find_char(find_char(str_input, ',') + 1, ','); // skip two commas
-  while (comma && comma[1] == 'x') {
-    i32 tmp = 0;
-    scan_result = sscanf(comma + 1, "x:%d%*s", &tmp);
-    xs[count] = (f32)tmp;
-    if (scan_result < 0 || count > max_count) {
-      return -1;
-    }
-    ++count;
+  f32* ys = xs + count + 1;
+
+  xs[0] = 0.0f;
+  ys[0] = 0.0f;
+
+  i32 tmp = 0;
+  for (int i = 1; i <= count; ++i) {
     comma = find_char(comma + 1, ',');
-  }
-  f32* ys = xs + count;
-  for (int i = 0; i < count; ++i) {
-    if (!comma || comma[1] != 'y') {
-      return -1;
+    if (!comma || comma[1] != 't') {
+      return -5;
     }
-    i32 tmp = 0;
-    scan_result = sscanf(comma + 1, "y:%d%*s", &tmp);
+    parse_i32(comma + 3, &tmp);
+    xs[i] = (f32)tmp;
+
+    comma = find_char(comma + 1, ',');
+    if (!comma || comma[1] != 's') {
+      return -6;
+    }
+    parse_i32(comma + 3, &tmp);
     ys[i] = (f32)tmp;
-    if (scan_result < 0) {
-      return -1;
-    }
-    comma = find_char(comma + 1, ',');
   }
 
-  // f32* as = ys + count;
-  // f32* bs = as + count - 1;
-  // void* free_space = (void*)(bs + count - 1);
-  // result->spline.xs = xs;
-  // result->spline.ys = ys;
-  // result->spline.as = as;
-  // result->spline.bzs = bzs;
+  if (!find_char(comma + 1, '$')) {
+    return -7;
+  }
 
-  // ::lh::interpolate_cubic_spline(&result->spline, free_space);
-  
-  void* free_space = (void*)(ys + count);
+  void* free_space = (void*)(ys + count + 1);
 
-  result->spline = interpolate_cubic_spline(xs, ys, count - 1, free_space);
+  result->spline = interpolate_cubic_spline(xs, ys, count, free_space);
 
   return 0;
-}
+  }
