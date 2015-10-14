@@ -47,7 +47,8 @@ private:
   QTimeEvt mCalibrationTimeout;
   rollingaveragernamespace::RollingAverager averager;
   float mCurPos;  // float to save partial moves needed by encoder resolution division
-  long mPrevPos;  // used to prevent jitter
+  long mPrevPos1;  // used to prevent jitter
+  long mPrevPos2;  // used to prevent jitter
   long mPrevEncoderCnt;
   long mCalibrationPos1;
   long mCalibrationPos2;
@@ -109,37 +110,22 @@ void Txr::UpdatePositionCalibration(Txr *const me)
 void Txr::UpdatePosition(Txr *const me)
 {
   long newPos = BSP_GetPot();
-  // map the Position from Pot values to calibrated motor values
-  newPos = map(newPos, MIN_POT_VAL, MAX_POT_VAL, me->mCalibrationPos1, me->mCalibrationPos2);
-  newPos = me->averager.Roll(newPos);
   
   // only update the current position if it's not jittering between two values
-  if (newPos != me->mPrevPos && newPos != me->mCurPos) {
-    me->mPrevPos = me->mCurPos;
-    me->mCurPos = newPos;
+  if (newPos != me->mPrevPos1 && newPos != me->mPrevPos2) {
+    me->mPrevPos1 = me->mPrevPos2;
+    me->mPrevPos2 = newPos;
+    me->mCurPos = map(newPos, MIN_POT_VAL, MAX_POT_VAL, me->mCalibrationPos1, me->mCalibrationPos2);
+    me->mPacket.position = me->mCurPos;
+    BSP_UpdateRxProxy(me->mPacket);
   }
-  
-  me->mPacket.position = me->mCurPos;
-  BSP_UpdateRxProxy(me->mPacket);
 }
 
 void Txr::UpdatePositionZMode(Txr *const me)
 {
-  long newPos = BSP_GetPot();
-  // map the Position from Pot values to calibrated motor values
-  newPos = map(newPos, MIN_POT_VAL, MAX_POT_VAL, me->mCalibrationPos1, me->mCalibrationPos2);
-  newPos = me->averager.Roll(newPos);
-  
-  // only update the current position if it's not jittering between two values
-  if (newPos != me->mPrevPos && newPos != me->mCurPos) {
-    me->mPrevPos = me->mCurPos;
-    me->mCurPos = newPos;
-  }
-  
-  me->mPacket.position = me->mCurPos;
   me->mPacket.velocity = me->mVelocityManager.GetVelocityPercent();
   me->mVelocityManager.SetLEDs(false);
-  BSP_UpdateRxProxy(me->mPacket);
+  UpdatePosition(me);
 }
 
 void Txr::UpdatePositionPlayBack(Txr *const me)
