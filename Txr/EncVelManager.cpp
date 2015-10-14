@@ -57,6 +57,7 @@ void EncVelManager::SetLEDs(char force)
   }
   
   if (mVelocityPercent == MID_VELOCITY) {
+    SetAllLEDsOff();
     ENC_GREEN_LED_ON();
     ENC_RED_LED_ON();
   }
