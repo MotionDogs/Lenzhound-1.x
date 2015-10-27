@@ -86,6 +86,11 @@ struct Packet {
   char velocity;
   char acceleration;
   char mode;
+  bool operator!=(const Packet &rhs)
+  {
+    return position != rhs.position || velocity != rhs.velocity ||
+           acceleration != rhs.acceleration || mode != rhs.mode;
+  }
 };
 
 // Sys timer tick per seconds
@@ -99,7 +104,10 @@ int  BSP_GetMode();
 void BSP_TurnOnSpeedLED(char num);
 void BSP_TurnOffSpeedLED(char num);
 void BSP_UpdateRadioParams();
-int BSP_IsRadioAlive();
+bool BSP_IsRadioAlive();
+bool BSP_IsRadioPowerOn();
+void BSP_TurnOffRadio();
+void BSP_TurnOnRadio();
 
 /////////////////////////////////////////////////////////////////////
 // NOTE: The CPU clock frequency F_CPU is defined externally for each
