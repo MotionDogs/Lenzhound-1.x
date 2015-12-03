@@ -161,6 +161,8 @@ QP::QState Txr::initial(Txr * const me, QP::QEvt const * const e) {
   me->mPacket.position = 0;
   me->mZModeSavedVelocity = 50;
   me->mZModeSavedAcceleration = 100;
+  me->mPrevPos1 = -1;
+  me->mPrevPos2 = -1;
   me->subscribe(ENC_DOWN_SIG);
   me->subscribe(ENC_UP_SIG);
   me->subscribe(PLAY_MODE_SIG);
