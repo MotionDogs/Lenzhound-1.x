@@ -28,7 +28,7 @@ Radio::Radio(int packetSize)
   Mirf.setTADDR((byte *)"serv1");
   Mirf.payload = packetSize; // Payload length
   LoadSettings();
-  Mirf.config(); // Power up reciver
+  PowerUp();
 }
 
 void Radio::LoadSettings()
@@ -55,9 +55,26 @@ void Radio::LoadSettings()
 
 void Radio::ReloadSettings()
 {
-  Mirf.powerDown();  // not sure if this is necessary
+  PowerDown();  // not sure if this is necessary
   LoadSettings();
+  PowerUp();
+}
+
+void Radio::PowerDown()
+{
+  mIsPowerUp = false;
+  Mirf.powerDown();
+}
+
+void Radio::PowerUp()
+{
   Mirf.config();
+  mIsPowerUp = true;
+}
+
+bool Radio::IsPowerUp()
+{
+  return mIsPowerUp;
 }
 
 void Radio::SendPacket(byte *message) 
@@ -67,7 +84,7 @@ void Radio::SendPacket(byte *message)
   }
 }
 
-int Radio::IsAlive()
+bool Radio::IsAlive()
 {
   uint8_t addr[mirf_ADDR_LEN];
   uint8_t orig[mirf_ADDR_LEN] = {'s','e','r','v','1'};

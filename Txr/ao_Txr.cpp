@@ -55,12 +55,13 @@ private:
   char mEncPushes;
   char mCalibrationMultiplier;
   Packet mPacket;
+  Packet mPrevPacket;
+  bool mPacketUpdated;  // this will be set every time we send a packet so we can sleep if not
   long mSavedPositions[NUM_POSITION_BUTTONS];
   EncVelManager mVelocityManager;
   unsigned char mPrevPositionButtonPressed;
   char mZModeSavedVelocity;
   char mZModeSavedAcceleration;
-
 
 public:
   Txr() : 
@@ -84,12 +85,30 @@ protected:
   void UpdatePositionZMode(Txr *const me);
   void UpdatePositionPlayBack(Txr *const me);  
   void UpdateCalibrationMultiplier(int setting);
+  void SendUpdatedPosition(Txr *const me);
 };
 
 
 static Txr l_Txr;                   // the single instance of Txr active object (local)
 QActive * const AO_Txr = &l_Txr;    // the global opaque pointer
 
+
+void Txr::SendUpdatedPosition(Txr *const me)
+{
+  if (me->mPacket != me->mPrevPacket)
+  {
+    BSP_UpdateRxProxy(me->mPacket);
+    me->mPacketUpdated = true;
+    me->mPrevPacket = me->mPacket;
+  }
+  // if the radio is on it means we're not sleeping, and we
+  // need to send the packet even if it hasn't updated because a previous
+  // packet may have been missed by the Rxr
+  else if (BSP_IsRadioPowerOn())
+  {
+    BSP_UpdateRxProxy(me->mPacket);
+  }
+}
 
 void Txr::UpdatePositionCalibration(Txr *const me)
 { 
@@ -104,7 +123,7 @@ void Txr::UpdatePositionCalibration(Txr *const me)
   me->mPrevEncoderCnt = curEncoderCnt;
 
   me->mPacket.position = me->mCurPos;
-  BSP_UpdateRxProxy(me->mPacket);
+  me->SendUpdatedPosition(me);
 }
 
 void Txr::UpdatePosition(Txr *const me)
@@ -118,9 +137,9 @@ void Txr::UpdatePosition(Txr *const me)
     me->mCurPos = map(newPos, MIN_POT_VAL, MAX_POT_VAL, me->mCalibrationPos1, me->mCalibrationPos2);
   }
   
-  // this still needs to be updated and sent so that velocity changes happen (for ZMode) and possibly other cases
+  // this still needs to be updated and sent so that velocity changes happen (for play back) and possibly other cases
   me->mPacket.position = me->mCurPos;
-  BSP_UpdateRxProxy(me->mPacket);
+  me->SendUpdatedPosition(me);
 }
 
 void Txr::UpdatePositionZMode(Txr *const me)
@@ -135,7 +154,7 @@ void Txr::UpdatePositionPlayBack(Txr *const me)
   me->mPacket.position = me->mCurPos;
   me->mPacket.velocity = me->mVelocityManager.GetVelocityPercent();
   me->mVelocityManager.SetLEDs(false);
-  BSP_UpdateRxProxy(me->mPacket);
+  me->SendUpdatedPosition(me);
 }
 
 void Txr::UpdateCalibrationMultiplier(int setting)
@@ -163,6 +182,7 @@ QP::QState Txr::initial(Txr * const me, QP::QEvt const * const e) {
   me->mZModeSavedAcceleration = 100;
   me->mPrevPos1 = -1;
   me->mPrevPos2 = -1;
+  me->mPacketUpdated = true;  // start it out true so we don't sleep right away
   me->subscribe(ENC_DOWN_SIG);
   me->subscribe(ENC_UP_SIG);
   me->subscribe(PLAY_MODE_SIG);
@@ -214,6 +234,11 @@ QP::QState Txr::on(Txr * const me, QP::QEvt const * const e) {
       else {
         GREEN2_LED_ON();
       }
+      if (!me->mPacketUpdated) {
+        // radio will be turned back on automatically when we send again
+        BSP_TurnOffRadio();
+      }
+      me->mPacketUpdated = false;  //reset flag
       status_ = Q_HANDLED();
       break;
     }

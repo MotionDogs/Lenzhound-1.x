@@ -6,9 +6,13 @@ public:
   Radio(int packetSize);
   void ReloadSettings();
   void SendPacket(byte* message);
-  int IsAlive();  // confirms we're still communicating with Txcvr
+  bool IsAlive();  // confirms we're still communicating with Txcvr
+  void PowerDown();
+  void PowerUp();  
+  bool IsPowerUp();
 private:
   void LoadSettings();
+  bool mIsPowerUp;
 };
 
 #endif //Radio_h

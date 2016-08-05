@@ -181,6 +181,9 @@ void QF::onIdle() {
 
 void BSP_UpdateRxProxy(Packet packet)
 {  
+  if (!radio.IsPowerUp())
+    radio.PowerUp();
+    
   radio.SendPacket((byte *)&packet);
 }
 
@@ -251,9 +254,24 @@ void BSP_UpdateRadioParams()
   radio.ReloadSettings();
 }
 
-int BSP_IsRadioAlive()
+bool BSP_IsRadioAlive()
 {
   return radio.IsAlive();
+}
+
+bool BSP_IsRadioPowerOn()
+{
+  return radio.IsPowerUp();
+}
+
+void BSP_TurnOnRadio()
+{
+  radio.PowerUp();
+}
+
+void BSP_TurnOffRadio()
+{
+  radio.PowerDown();
 }
 
 //............................................................................
