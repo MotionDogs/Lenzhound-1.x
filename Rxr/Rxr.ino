@@ -66,6 +66,13 @@ void setup() {
   MS1_PIN(SET);
   MS2_PIN(SET);
 
+  // drv8880
+  SET_MODE(SLEEP2_PIN, OUT);
+  SET_MODE(STEP2_PIN, OUT);
+  SET_MODE(DIR2_PIN, OUT);
+  SET_MODE(TRQ1_PIN, OUT); 
+
+
   console.Init();
   DirtyCheckSettings();
 

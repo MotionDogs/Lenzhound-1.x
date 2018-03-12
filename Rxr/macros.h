@@ -22,4 +22,11 @@
 #define DIR_PIN(verb)       ( verb(C,7) )
 #define SLEEP_PIN(verb)     ( verb(D,3) )
 #define ENABLE_PIN(verb)    ( verb(D,7) )
+
+// drv8880 pins
+#define TRQ1_PIN(verb)      ( verb(F,4) )
+#define SLEEP2_PIN(verb)    ( verb(F,5) )
+#define STEP2_PIN(verb)     ( verb(F,6) )
+#define DIR2_PIN(verb)      ( verb(F,7) )
+
 #endif // rxr_macros_h
